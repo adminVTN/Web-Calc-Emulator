@@ -583,6 +583,7 @@
         animation: blink 800ms 2;
     }
 </style>
+<link rel="manifest" href="/manifest.json">
 <div id="container" style="display: none;">
     <svg id="status" viewBox="0 0 576 24">
         <g id="statusEY" style="transform: translateX(6.3%);">
@@ -3777,5 +3778,10 @@
 <script>
   const BUILD_ID = "DEV";
   build.innerHTML = `(Build ${BUILD_ID})`;
+</script>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js");
+  }
 </script>
 </html>
