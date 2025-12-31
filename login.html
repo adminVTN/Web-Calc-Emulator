@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <!-- Add Supabase.js from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .login-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        #message {
+            margin-top: 1rem;
+            text-align: center;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Đăng nhập</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Đăng nhập</button>
+            <p id="message"></p>
+        </form>
+    </div>
+
+    <script>
+        // *******************************************************************
+        // QUAN TRỌNG: Thay thế các giá trị bên dưới bằng URL và khóa Supabase của bạn.
+        // *******************************************************************
+        const supabaseUrl = 'YOUR_SUPABASE_URL'; // Thay thế bằng URL Supabase của bạn
+        const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY'; // Thay thế bằng khóa anon Supabase của bạn
+
+        // Kiểm tra xem URL và khóa đã được thay thế chưa
+        if (supabaseUrl === 'YOUR_SUPABASE_URL' || supabaseAnonKey === 'YOUR_SUPABASE_ANON_KEY') {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = 'Lỗi: Vui lòng cấu hình URL và khóa anon của Supabase trong tệp login.html.';
+            messageEl.style.color = 'red';
+        }
+
+        const { createClient } = supabase;
+        const _supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+        const loginForm = document.getElementById('login-form');
+        const messageEl = document.getElementById('message');
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            messageEl.textContent = 'Đang đăng nhập...';
+            messageEl.style.color = 'black';
+
+
+            const { data, error } = await _supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                messageEl.textContent = 'Lỗi đăng nhập: ' + error.message;
+                messageEl.style.color = 'red';
+            } else {
+                messageEl.textContent = 'Đăng nhập thành công! Đang chuyển hướng...';
+                messageEl.style.color = 'green';
+                // Chuyển hướng đến trang chính sau khi đăng nhập thành công
+                setTimeout(() => {
+                    window.location.href = '/index.html';
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
